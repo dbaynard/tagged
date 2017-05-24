@@ -112,6 +112,9 @@ newtype Tagged s b = Tagged { unTagged :: b } deriving
 #if __GLASGOW_HASKELL__ >= 707
   , Typeable
 #endif
+#if __GLASGOW_HASKELL__ >= 800
+  , Data
+#endif
 
   )
 
@@ -129,6 +132,7 @@ taggedTyCon = mkTyCon3 "tagged" "Data.Tagged" "Tagged"
 
 #endif
 
+#if __GLASGOW_HASKELL__ < 800
 instance (Data s, Data b) => Data (Tagged s b) where
   gfoldl f z (Tagged b) = z Tagged `f` b
   toConstr _ = taggedConstr
@@ -146,6 +150,7 @@ taggedConstr = mkConstr taggedDataType "Tagged" [] Prefix
 taggedDataType :: DataType
 taggedDataType = mkDataType "Data.Tagged.Tagged" [taggedConstr]
 {-# INLINE taggedDataType #-}
+#endif
 #endif
 
 instance Show b => Show (Tagged s b) where
